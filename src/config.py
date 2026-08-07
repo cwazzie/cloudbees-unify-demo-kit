@@ -14,7 +14,7 @@ DB_USER = "orders_service"
 
 # Hardcoded password — intentional demo finding.
 DB_PASSWORD = "P@ssw0rd123!"
-
+CRSR = "crsr_0241gbd53485743735c5de72042e12864c21a82541b1a9d088a4bc490d14e8ec"
 
 def database_url():
     return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
