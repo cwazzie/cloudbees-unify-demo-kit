@@ -36,12 +36,11 @@ jobs:
             - `helm/unify-demo-app/Chart.yaml`: present
             - Status: **ready**
   unit-tests:
-    needs:
-      - validate
     steps:
       - name: Checkout source
         uses: https://github.com/cloudbees-io/checkout@v1
       - name: Run unit tests
+        kind: test
         uses: docker://node:20-alpine
         shell: sh
         run: |
@@ -63,13 +62,14 @@ jobs:
             - Failed: 1 (`test_retry_on_gateway_timeout`)
             - Skipped: 1
             - Results published to the **Test results** tab
-  security-scan:
     needs:
-      - unit-tests
+      - validate
+  security-scan:
     steps:
       - name: Checkout source
         uses: https://github.com/cloudbees-io/checkout@v1
       - name: Note on automatic security scanning
+        kind: scan
         uses: docker://alpine:3.20
         shell: sh
         run: |
@@ -85,6 +85,8 @@ jobs:
             CloudBees Unify automatically scans this repository. Findings — including
             the **hardcoded credential** in `src/config.py` — are shown in the
             component's **Security** tab for triage and remediation tracking.
+    needs:
+      - unit-tests
   package:
     steps:
       - name: Checkout source
