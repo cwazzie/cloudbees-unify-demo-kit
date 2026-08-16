@@ -14,8 +14,8 @@ DB_USER = "orders_service"
 
 # Hardcoded password — intentional demo finding.
 DB_PASSWORD = "P@ssw0rd123!"
-aws_access_key_id = "AKIAIOSFODNN7EXAMPLE"
-aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
 def database_url():
     return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
