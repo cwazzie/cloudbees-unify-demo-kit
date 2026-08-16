@@ -17,7 +17,10 @@ spec:
     spec:
       containers:
         - name: orders-api
-          image: IMAGE_PLACEHOLDER
+          image: ghcr.io/example/orders-api:1.4.0
+          resources:
+            limits:
+              cpu: "500m"
           ports:
             - containerPort: 8080
           env:
