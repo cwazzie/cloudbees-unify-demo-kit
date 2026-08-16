@@ -15,9 +15,6 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          resources:
-            limits:
-              cpu: "500m"
           ports:
             - containerPort: 8080
           env:
