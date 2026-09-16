@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Customer Portal — delivery, health, and risk</title>
+  <style>
+    :root {
+      --bg: #1b1b1d;
+      --surface: #242426;
+      --elevated: #2c2c2e;
+      --text: #ececec;
+      --text-2: #b4b4b8;
+      --text-3: #8a8a90;
+      --stroke: #3a3a3e;
+      --accent: #6cb6ff;
+      --success: #5dcea8;
+      --warning: #e0b44a;
+      --danger: #f07178;
+      --info: #6cb6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 28px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; }
+    h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+    p { margin: 0; }
+    .sub { color: var(--text-2); }
+    .caption { color: var(--text-3); font-size: 12px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .stat .value { font-size: 22px; font-weight: 600; }
+    .stat .label { color: var(--text-2); font-size: 12px; margin-top: 4px; }
+    .success { color: var(--success); }
+    .warning { color: var(--warning); }
+    .danger { color: var(--danger); }
+    .stages {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      overflow-x: auto;
+    }
+    .stage {
+      flex: 1;
+      min-width: 128px;
+      border: 1px solid var(--stroke);
+      background: var(--elevated);
+      border-radius: 6px;
+      padding: 10px 8px 12px;
+      text-align: center;
+    }
+    .stage strong { display: block; font-size: 12px; }
+    .stage span { display: block; color: var(--text-3); font-size: 10px; margin-top: 6px; }
+    .stage.done { background: #2a2a2e; }
+    .stage.gate {
+      border-color: var(--accent);
+      border-width: 2px;
+    }
+    .stage.gate strong { color: var(--accent); }
+    .stage.pending { opacity: 0.65; }
+    .connector {
+      width: 18px;
+      flex: 0 0 18px;
+      align-self: center;
+      height: 1.5px;
+      background: var(--stroke);
+    }
+    .split {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--stroke);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--stroke);
+      vertical-align: top;
+    }
+    th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--surface);
+    }
+    tr:last-child td { border-bottom: 0; }
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .dot.success { background: var(--success); }
+    .dot.warning { background: var(--warning); }
+    .dot.info { background: var(--info); }
+    .chart-wrap { width: 100%; }
+    .chart-wrap svg { width: 100%; height: 200px; display: block; }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--stroke);
+      margin: 0;
+    }
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .card {
+      border: 1px solid var(--stroke);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+    .card-h {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--stroke);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .card-b { padding: 14px 12px; display: flex; flex-direction: column; gap: 10px; }
+    .pill {
+      display: inline-block;
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      margin: 0 6px 6px 0;
+    }
+    .pill.active { background: var(--elevated); }
+    @media (max-width: 900px) {
+      .stats, .split, .bottom { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Customer Portal — delivery, health, and risk</h1>
+      <p class="sub">Close view for the Unify story: repeatable staged releases, tools kept, evidence on every job, governed production approval. Application Customer Portal · component orders-api · FinSure staged path.</p>
+    </header>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="value success">Continuous</div>
+        <div class="label">Audit Trail</div>
+      </div>
+      <div class="stat">
+        <div class="value">5</div>
+        <div class="label">Evidence items this run (CI + staging)</div>
+      </div>
+      <div class="stat">
+        <div class="value warning">1</div>
+        <div class="label">Production approval gate in path</div>
+      </div>
+      <div class="stat">
+        <div class="value">6</div>
+        <div class="label">Existing tools still in the toolchain</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Repeatable staged release</h2>
+      <p class="sub" style="margin-bottom: 10px;">Same stages every time. Current release is on the enforceable control: production approval.</p>
+      <div class="stages" role="img" aria-label="FinSure staged release: Governance, Staging, Prod approval, Production, Post-release">
+        <div class="stage done"><strong>Governance</strong><span>Evidence published</span></div>
+        <div class="connector"></div>
+        <div class="stage done"><strong>Staging</strong><span>Evidence published</span></div>
+        <div class="connector"></div>
+        <div class="stage gate"><strong>Prod approval</strong><span>Waiting sign-off</span></div>
+        <div class="connector"></div>
+        <div class="stage pending"><strong>Production</strong><span>Not started</span></div>
+        <div class="connector"></div>
+        <div class="stage pending"><strong>Post-release</strong><span>Not started</span></div>
+      </div>
+      <p class="caption" style="margin-top: 8px;">Source: FinSure staged workflow in the application repo (Governance → Staging → Production Approval → Production → Post-release) · current run held at the approval stage</p>
+    </section>
+
+    <section class="split">
+      <div>
+        <h2>Evidence published per job</h2>
+        <p class="sub" style="margin-bottom: 8px;">Continuous audit trail from the Unify workflow — not a slide deck built the week before the auditor arrives.</p>
+        <table>
+          <thead>
+            <tr><th>Job</th><th>Evidence</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="dot success"></span>validate</td><td>k8s + Helm structure ready</td><td>Published</td></tr>
+            <tr><td><span class="dot warning"></span>unit-tests</td><td>16 tests · 14 passed · 1 failed · 1 skipped</td><td>Published</td></tr>
+            <tr><td><span class="dot info"></span>security-scan</td><td>Findings on the component Security tab</td><td>Published</td></tr>
+            <tr><td><span class="dot success"></span>package</td><td>orders-api 1.4.x registered as artifact</td><td>Published</td></tr>
+            <tr><td><span class="dot success"></span>deploy · staging</td><td>Simulated deploy success</td><td>Published</td></tr>
+            <tr><td><span class="dot warning"></span>production-approval</td><td>Release-manager sign-off (captured as evidence)</td><td>Gated</td></tr>
+          </tbody>
+        </table>
+        <p class="caption" style="margin-top: 8px;">Source: <code>.cloudbees/workflows/ci.yaml</code> and <code>deploy.yaml</code> · each job calls publish-evidence-item</p>
+      </div>
+      <div>
+        <h2>App and component risk</h2>
+        <div class="stats" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+          <div class="stat">
+            <div class="value warning">14 / 16</div>
+            <div class="label">orders-api tests passing</div>
+          </div>
+          <div class="stat">
+            <div class="value danger">18</div>
+            <div class="label">Open Checkov IaC findings</div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Signal</th><th>Where leaders see it</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Failed retry test</td><td>Test results tab · component</td></tr>
+            <tr><td>Hardcoded credential in src/config.py</td><td>Security tab · component</td></tr>
+            <tr><td>8 High Checkov K8s checks</td><td>Security dashboard · org / app</td></tr>
+            <tr><td>2 remediations on a side branch</td><td>Image tag + CPU limits · PR</td></tr>
+          </tbody>
+        </table>
+        <p class="caption" style="margin-top: 8px;">Source: test-reports/junit.xml, src/config.py, Checkov scan of k8s/ · 16 findings left open on purpose for the demo</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Analytics across releases</h2>
+      <p class="sub" style="margin-bottom: 8px;">Evidence items published automatically per orders-api version. Count is jobs that called publish-evidence-item on that run (CI four jobs + staging deploy). 1.4.6 is the current run, still short the production evidence item until the approval stage completes.</p>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 640 200" role="img" aria-label="Evidence items published by orders-api version">
+          <text x="320" y="14" text-anchor="middle" fill="#b4b4b8" font-size="12">Evidence items published</text>
+          <line x1="48" y1="28" x2="48" y2="168" stroke="#3a3a3e" />
+          <line x1="48" y1="168" x2="620" y2="168" stroke="#3a3a3e" />
+          <text x="40" y="32" text-anchor="end" fill="#8a8a90" font-size="10">8</text>
+          <text x="40" y="102" text-anchor="end" fill="#8a8a90" font-size="10">4</text>
+          <text x="40" y="172" text-anchor="end" fill="#8a8a90" font-size="10">0</text>
+          <polyline
+            fill="none"
+            stroke="#6cb6ff"
+            stroke-width="2"
+            points="80,80.5 176,80.5 272,63 368,80.5 464,63 560,80.5"
+          />
+          <polygon
+            fill="#6cb6ff"
+            fill-opacity="0.12"
+            points="80,168 80,80.5 176,80.5 272,63 368,80.5 464,63 560,80.5 560,168"
+          />
+          <g fill="#6cb6ff" font-size="11" text-anchor="middle">
+            <circle cx="80" cy="80.5" r="3" /><text x="80" y="72" fill="#ececec">5</text>
+            <circle cx="176" cy="80.5" r="3" /><text x="176" y="72" fill="#ececec">5</text>
+            <circle cx="272" cy="63" r="3" /><text x="272" y="54" fill="#ececec">6</text>
+            <circle cx="368" cy="80.5" r="3" /><text x="368" y="72" fill="#ececec">5</text>
+            <circle cx="464" cy="63" r="3" /><text x="464" y="54" fill="#ececec">6</text>
+            <circle cx="560" cy="80.5" r="3" /><text x="560" y="72" fill="#ececec">5</text>
+          </g>
+          <g fill="#8a8a90" font-size="11" text-anchor="middle">
+            <text x="80" y="186">1.4.1</text>
+            <text x="176" y="186">1.4.2</text>
+            <text x="272" y="186">1.4.3</text>
+            <text x="368" y="186">1.4.4</text>
+            <text x="464" y="186">1.4.5</text>
+            <text x="560" y="186">1.4.6</text>
+          </g>
+        </svg>
+      </div>
+      <p class="caption">Source: kit workflow pattern (validate, unit-tests, security-scan, package, deploy) · 1.4.3 and 1.4.5 include a completed production evidence item after approval</p>
+    </section>
+
+    <hr />
+
+    <section class="bottom">
+      <div>
+        <h2>Controls on every release</h2>
+        <table>
+          <thead>
+            <tr><th>Control</th><th>Enforced how</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="dot success"></span>Security scan before package</td><td>Job graph · needs: security-scan</td></tr>
+            <tr><td><span class="dot warning"></span>Production requires approval</td><td>Staged workflow gate</td></tr>
+            <tr><td><span class="dot success"></span>Prod change ticket (talking point)</td><td>deploy.yaml prod policy</td></tr>
+            <tr><td><span class="dot info"></span>Same path for every team</td><td>Reusable staged workflow</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-h">
+          Tool investment preserved
+          <span class="pill active">kept</span>
+        </div>
+        <div class="card-b">
+          <p>Unify orchestrates. Teams keep GitHub Actions, Jenkins, GitLab, Jira, ServiceNow, and Kubernetes. The GitHub Actions CI in this repo is the “embrace, don’t replace” proof point.</p>
+          <div>
+            <span class="pill">GitHub Actions</span>
+            <span class="pill">Jenkins</span>
+            <span class="pill">GitLab</span>
+            <span class="pill">Jira</span>
+            <span class="pill">ServiceNow</span>
+            <span class="pill">Kubernetes</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
